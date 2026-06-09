@@ -4,10 +4,9 @@ End-to-end pipeline for training, quantizing, synthesizing and measuring
 CIFAR-10 classifiers on the Maxim (Analog Devices) **MAX78000** CNN
 accelerator (FTHR_RevA board).
 
-Sister project: [`../pc-implementation`](../pc-implementation) — pure-PyTorch
-reference training pipeline that produces the fp32 checkpoints this directory
-consumes, and also simulates int8 PTQ for an "ideal-hardware" upper bound on
-deployment accuracy.
+Sister projects:
+- [`../pc-implementation`](../pc-implementation) — pure-PyTorch reference training pipeline that produces the fp32 checkpoints this directory consumes, and also simulates MAX78000-realistic int8 PTQ as an "ideal-hardware" upper bound on deployment accuracy.
+- [`../imx500-implementation`](../imx500-implementation) — Sony IMX500 deployment pipeline. Same model zoo (plus `baseline_5x5`), different quantization toolchain (MCT per-channel int8 → ONNX → `imxconv-pt` → `.rpk`), runs on the Raspberry Pi AI Camera.
 
 ---
 
@@ -59,7 +58,9 @@ end-to-end on the MAX78000 with no manual YAML editing required.
 | `nascifarnet` | NAS-found, MCU-targeted | Maxim ai8x-training (2021) | 303 K | 36 M | NAS-discovered specifically under the MAX78000 op-set constraints. Native ai8x arch (`ai85nascifarnet`), no rewriting needed. |
 | `ressimplenet` | Residual SimpleNet | HasanPour et al. (arXiv 2016) | 374 K | 18 M | 14-layer Residual SimpleNet adapted to MAX78000. Uses the BN-augmented variant (`ai85ressimplenetbn`) — BN is fused into Conv at synthesis, so the deployed weights are equivalent to a no-BN model but training is dramatically more stable. |
 
-Excluded from this directory:
+Excluded from this directory (all are present in the PC zoo, and
+`baseline_5x5` does deploy on the IMX500 — see
+[`../imx500-implementation`](../imx500-implementation)):
 - `baseline_5x5` (5×5 kernels not supported by the MAX78000 CNN accelerator)
 - `separable` (depthwise separable; supported but extremely inefficient — Maxim reserves their depthwise hardware support for the MAX78002)
 - `resnet8` (MLPerf Tiny ResNet-8; the `eltwise: add` SRAM-layout requirements are non-trivial to satisfy — `ressimplenet` is our residual representative instead)
@@ -263,14 +264,14 @@ These three columns demonstrate the value proposition of QAT for fixed-point dep
 
 ---
 
-## How this compares to the PC reference
+## How this compares to the PC reference and the IMX500 path
 
-| Quantity | PC (`../pc-implementation`) | MAX78000 (this dir) |
-|---|---|---|
-| fp32 training | 80 ep, Adam | 80 ep, Adam (same hyperparams per variant) |
-| QAT fine-tune | 40 ep from `<v>_fp32.pt`, switch at ep 5 | 40 ep from `<v>_fp32.pth.tar`, switch at ep 5 (matching `qat_policy_cifar10.yaml`) |
-| int8 PTQ | `quantize_model_ptq` (BN fold + sym per-tensor + power-of-two scales) | `bn_fuser_v2.py` + `quantize.py` (ai8x-synthesis) — same algorithmic intent, with additional `output_shift` per layer at deployment |
-| Where deployed | nowhere (host-side simulation only) | the actual FTHR board |
-| Architectural fidelity | identical to MAX78000 deployment, BN included for training stability and folded at deployment | same architecture; ai8x layer wrappers used to satisfy the synthesis toolchain |
+| Quantity | PC (`../pc-implementation`) | MAX78000 (this dir) | IMX500 ([`../imx500-implementation`](../imx500-implementation)) |
+|---|---|---|---|
+| fp32 training | 80 ep, Adam | 80 ep, Adam (same hyperparams per variant) | n/a — consumes PC `*.pt` directly |
+| QAT fine-tune | 40 ep from `<v>_fp32.pt`, switch at ep 5 | 40 ep from `<v>_fp32.pth.tar`, switch at ep 5 (matching `qat_policy_cifar10.yaml`) | n/a — consumes PC `<v>_qat.pt` directly |
+| int8 PTQ | `quantize_model_ptq` (BN fold + sym per-tensor + power-of-two scales) | `bn_fuser_v2.py` + `quantize.py` (ai8x-synthesis) — same algorithmic intent, with additional `output_shift` per layer at deployment | MCT `pytorch_post_training_quantization` with IMX500 TPC v1 (per-channel scales, calibrated activation ranges) |
+| Where deployed | nowhere (host-side simulation only) | the actual FTHR board | Sony IMX500 sensor inside the Raspberry Pi AI Camera |
+| Architectural fidelity | identical to MAX78000 deployment, BN included for training stability and folded at deployment | same architecture; ai8x layer wrappers used to satisfy the synthesis toolchain | same architecture; `IMX500PrepWrapper` bakes the 0-255 → CIFAR-norm head into the ONNX graph |
 
-The PC int8 numbers are an "ideal-hardware" upper bound (no `output_shift`, no learned activation thresholds). The MAX78000 device numbers are what the silicon actually achieves. Both are valid; the gap is part of the paper's findings.
+The PC int8 numbers are an "ideal-hardware" upper bound for the MAX78000 path (no `output_shift`, no learned activation thresholds). The MAX78000 device numbers are what the per-tensor silicon actually achieves. The IMX500 device numbers — typically within ≤0.3 pp of fp32 — show how much of the PTQ drop is silicon-imposed (MAX78000) vs algorithmic (would happen on any per-tensor int8 deployment). All three are valid; the gap structure across them is part of the paper's findings.

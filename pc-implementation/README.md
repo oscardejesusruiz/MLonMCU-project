@@ -1,10 +1,16 @@
 # PC-side reference — CIFAR-10 training & int8 simulation
 
 Pure-PyTorch training pipeline that produces the fp32 and QAT checkpoints
-which the MAX78000 deployment in [`../max78000-implementation`](../max78000-implementation)
-consumes. Also serves as the host-side **int8 PTQ simulator**, mirroring the
-MAX78000 deployment behaviour (BN folding → symmetric per-tensor int8) so
-deployment-cost numbers are reproducible without a board.
+consumed by both deployment targets:
+
+- [`../max78000-implementation`](../max78000-implementation) — MAX78000 CNN accelerator
+- [`../imx500-implementation`](../imx500-implementation) — Sony IMX500 intelligent vision sensor
+
+Also serves as the host-side **int8 PTQ simulator** for the MAX78000 path,
+mirroring the on-device behaviour (BN folding → symmetric per-tensor int8)
+so MAX78000 deployment-cost numbers are reproducible without a board. The
+IMX500 path runs its own MCT-based PTQ on the same checkpoints, so the
+same `*.pt` files feed two completely different quantization toolchains.
 
 Runs on Apple Silicon (MPS), CUDA, or CPU — no microcontroller required.
 
@@ -38,20 +44,21 @@ Runs on Apple Silicon (MPS), CUDA, or CPU — no microcontroller required.
 
 ## Models evaluated
 
-Seven architectures total — six of them are mirrored 1:1 by the MAX78000
-implementation (same channel widths, same BN-fold-equivalent topology), and
-one (`baseline_5x5`) lives PC-only because its 5×5 kernels cannot deploy to
-the MAX78000 accelerator.
+Seven architectures total. All seven deploy on the IMX500. Six of them
+are mirrored 1:1 by the MAX78000 implementation (same channel widths,
+same BN-fold-equivalent topology); `baseline_5x5` cannot deploy on the
+MAX78000 because its 5×5 kernels are outside the accelerator's op-set,
+but the IMX500 has no such restriction.
 
-| Variant | Family | Paper / source | Deploys on MAX78000? |
-|---|---|---|---|
-| `baseline` | Dense conv, shallow | Lai et al. CMSIS-NN (arXiv 2018), 3×3 adaptation | ✓ |
-| `baseline_5x5` | Dense conv with 5×5 kernels | Lai et al. CMSIS-NN — paper-faithful 5×5 version | **✗** (PC-only reference) |
-| `improved` | Dense conv + BN (ablation) | this work | ✓ |
-| `deeper` | Dense conv, deeper (ablation) | this work | ✓ |
-| `mininet` | Dense conv, deep VGG-style | Banbury et al. MicroNets (MLSys 2021) | ✓ |
-| `nascifarnet` | NAS-found, MCU-targeted | Maxim ai8x-training (2021) | ✓ |
-| `ressimplenet` | Residual SimpleNet | HasanPour et al. (arXiv 2016) | ✓ (BN-augmented variant) |
+| Variant | Family | Paper / source | MAX78000 | IMX500 |
+|---|---|---|---|---|
+| `baseline` | Dense conv, shallow | Lai et al. CMSIS-NN (arXiv 2018), 3×3 adaptation | ✓ | ✓ |
+| `baseline_5x5` | Dense conv with 5×5 kernels | Lai et al. CMSIS-NN — paper-faithful 5×5 version | **✗** | ✓ |
+| `improved` | Dense conv + BN (ablation) | this work | ✓ | ✓ |
+| `deeper` | Dense conv, deeper (ablation) | this work | ✓ | ✓ |
+| `mininet` | Dense conv, deep VGG-style | Banbury et al. MicroNets (MLSys 2021) | ✓ | ✓ |
+| `nascifarnet` | NAS-found, MCU-targeted | Maxim ai8x-training (2021) | ✓ | ✓ |
+| `ressimplenet` | Residual SimpleNet | HasanPour et al. (arXiv 2016) | ✓ (BN-augmented variant) | ✓ |
 
 The four CMSIS-NN-style models (`baseline`, `baseline_5x5`, `improved`,
 `deeper`) use the same Conv-BN-ReLU-Pool template at different widths and
@@ -202,19 +209,20 @@ Useful flags:
 The PC results serve two roles:
 
 1. **fp32 reference (upper bound)** — what's achievable with ideal float-precision hardware.
-2. **int8 PTQ simulation (best-case lower bound for deployment)** — what the MAX78000 *would* achieve if its quantization were as gentle as the PC simulator (per-tensor symmetric + power-of-two + calibrated activations).
+2. **int8 PTQ simulation (MAX78000-realistic)** — what the MAX78000 *would* achieve if its quantization were as gentle as the PC simulator (per-tensor symmetric + power-of-two + calibrated activations). The IMX500 has its own PTQ flow that runs against the same `*.pt` files — see [`../imx500-implementation`](../imx500-implementation).
 
-The MAX78000 deployment typically loses a few extra percentage points relative to PC PTQ due to the silicon's additional output-shift + bias quantization + clamping per layer. The gap PC-PTQ → MAX78000-device is part of the paper's findings.
+The MAX78000 deployment typically loses a few extra percentage points relative to PC PTQ due to the silicon's additional output-shift + bias quantization + clamping per layer. The IMX500 deployment, in contrast, stays within ≤0.3 pp of fp32 thanks to per-channel scales + activation calibration in the MCT toolchain. The gap between the three (PC-sim, MAX78000-device, IMX500-device) is part of the paper's findings.
 
 | Column | Source |
 |---|---|
 | fp32 accuracy | `reports/<v>_fp32_metrics.json` → `fp32_test_acc` (PC) |
-| int8 PTQ accuracy (PC sim) | `reports/<v>_fp32_metrics.json` → `int8_test_acc` or `reports/int8_eval/summary.txt` |
-| int8 PTQ accuracy (device) | `../max78000-implementation/reports/_eval_pre_synth/fp32/_acc/int8_<v>` |
-| int8 QAT accuracy (device) | `../max78000-implementation/reports/_eval_pre_synth/qat/_acc/int8_<v>` |
+| int8 PTQ accuracy (PC sim, MAX78000-realistic) | `reports/<v>_fp32_metrics.json` → `int8_test_acc` or `reports/int8_eval/summary.txt` |
+| int8 PTQ accuracy (MAX78000 device) | `../max78000-implementation/reports/_eval_pre_synth/fp32/_acc/int8_<v>` |
+| int8 QAT accuracy (MAX78000 device) | `../max78000-implementation/reports/_eval_pre_synth/qat/_acc/int8_<v>` |
+| int8 PTQ accuracy (IMX500) | `../imx500-implementation/outputs/reports/<v>_fp32_metrics.json` → `int8_test_acc` |
+| int8 QAT accuracy (IMX500) | `../imx500-implementation/outputs/reports/<v>_qat_metrics.json` → `int8_test_acc` |
 
-The MAX78000 side's `scripts/plot_acc_comparison.py` combines these into the
-3-bar-per-variant figure that's the headline of the deployment-cost story.
+The MAX78000 side's `scripts/plot_acc_comparison.py` combines the MAX78000 columns into the 3-bar-per-variant figure that's the headline of that target's deployment-cost story; the IMX500 side's `build_report.py` does the equivalent aggregation for the IMX500 columns.
 
 ---
 
@@ -256,5 +264,5 @@ These exact recipes are mirrored in `../max78000-implementation/train_max78000_m
 After running the PC pipeline:
 
 1. Open `reports/summary.md` and `reports/figures/pareto.png` to see the trade-offs.
-2. Cross to `../max78000-implementation/` and run the deployment side (training mirrors these hyperparams, then synthesizes and flashes).
-3. Once both sides have results, use `../max78000-implementation/scripts/plot_acc_comparison.py` for the final figure that compares **fp32 reference vs int8 PTQ device vs int8 QAT device** per variant.
+2. Cross to `../max78000-implementation/` for the MAX78000 deployment (mirror training → synthesize → flash → measure), and/or `../imx500-implementation/` for the IMX500 deployment (MCT PTQ → ONNX → `imxconv-pt` → `imx500-package` → run on the Pi AI Camera).
+3. Once the deployment results are in, use `../max78000-implementation/scripts/plot_acc_comparison.py` for the MAX78000 headline figure (**fp32 vs int8 PTQ device vs int8 QAT device** per variant) and `../imx500-implementation/build_report.py` for the IMX500 equivalent.
