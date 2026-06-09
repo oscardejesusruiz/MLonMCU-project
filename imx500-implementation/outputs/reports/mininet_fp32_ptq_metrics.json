@@ -1,0 +1,20 @@
+{
+  "tag": "mininet_fp32_ptq",
+  "model": "mininet",
+  "checkpoint": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/pc-implementation/trained_models_2/mininet_fp32_ptq.pt",
+  "output_dir": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/models/mininet_fp32_ptq",
+  "export_path": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/onnx/mininet_fp32_ptq_imx500_ptq.onnx",
+  "params": 316458,
+  "weight_kib_fp32": 1236.1640625,
+  "weight_kib_int8": 309.041015625,
+  "macs": 24478976,
+  "ops_paper_convention": 48957952,
+  "tpc_fw_name": "pytorch",
+  "tpc_target_platform": "imx500",
+  "tpc_version": "v1",
+  "quantization_info": "<model_compression_toolkit.core.common.user_info.UserInformation object at 0x16c37b8d0>",
+  "fp32_test_acc": 0.1301,
+  "fp32_mAP": 0.13608565176271697,
+  "int8_test_acc": 0.1279,
+  "int8_mAP": 0.13603772604893866
+}

@@ -1,0 +1,6 @@
+{'final_resource_utilization': 'NoneType',
+ 'gptq_info_dict': 'dict',
+ 'input_scale': 'int',
+ 'mixed_precision_cfg': 'list',
+ 'set_input_scale': 'method',
+ 'set_mixed_precision_cfg': 'method'}

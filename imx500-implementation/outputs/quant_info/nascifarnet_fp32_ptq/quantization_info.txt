@@ -1,0 +1,1 @@
+<model_compression_toolkit.core.common.user_info.UserInformation object at 0x179fce290>

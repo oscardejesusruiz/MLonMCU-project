@@ -1,0 +1,22 @@
+{
+  "Memory Report": {
+    "Name": "nascifarnet_fp32_imx500_ptq",
+    "Runtime Memory Physical Size": "103.00KB",
+    "Model Memory Physical Size": "327.19KB",
+    "Reserved Memory": "1.00KB",
+    "Memory Usage": "431.19KB",
+    "Total Memory Available On Chip": "8.00MB",
+    "Memory Utilization": "6%",
+    "Fit In Chip": true,
+    "Input Persistent": true,
+    "Networks": [
+      {
+        "Hash": "nascifarnet_fp32_imx500_ptq",
+        "Name": "nascifarnet_fp32_imx500_ptq",
+        "Runtime Memory Physical Size": "103.00KB",
+        "Model Memory Physical Size": "327.19KB",
+        "Input Persistence Cost": "7.00KB"
+      }
+    ]
+  }
+}

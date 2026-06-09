@@ -1,0 +1,22 @@
+{
+  "Memory Report": {
+    "Name": "baseline_qat_imx500_ptq",
+    "Runtime Memory Physical Size": "47.00KB",
+    "Model Memory Physical Size": "69.06KB",
+    "Reserved Memory": "1.00KB",
+    "Memory Usage": "117.06KB",
+    "Total Memory Available On Chip": "8.00MB",
+    "Memory Utilization": "2%",
+    "Fit In Chip": true,
+    "Input Persistent": true,
+    "Networks": [
+      {
+        "Hash": "baseline_qat_imx500_ptq",
+        "Name": "baseline_qat_imx500_ptq",
+        "Runtime Memory Physical Size": "47.00KB",
+        "Model Memory Physical Size": "69.06KB",
+        "Input Persistence Cost": "7.00KB"
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "tag": "deeper_qat",
+  "model": "deeper",
+  "checkpoint": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/pc-implementation/trained_models_2/deeper_qat.pt",
+  "output_dir": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/models/deeper_qat",
+  "export_path": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/onnx/deeper_qat_imx500_ptq.onnx",
+  "params": 141034,
+  "weight_kib_fp32": 550.9140625,
+  "weight_kib_int8": 137.728515625,
+  "macs": 7963904,
+  "ops_paper_convention": 15927808,
+  "tpc_fw_name": "pytorch",
+  "tpc_target_platform": "imx500",
+  "tpc_version": "v1",
+  "quantization_info": "<model_compression_toolkit.core.common.user_info.UserInformation object at 0x14befc9d0>",
+  "fp32_test_acc": 0.8569,
+  "fp32_mAP": 0.9310434395065228,
+  "int8_test_acc": 0.8562,
+  "int8_mAP": 0.9309254988358212
+}

@@ -1,0 +1,20 @@
+{
+  "tag": "improved_qat",
+  "model": "improved",
+  "checkpoint": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/pc-implementation/trained_models_2/improved_qat.pt",
+  "output_dir": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/models/improved_qat",
+  "export_path": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/onnx/improved_qat_imx500_ptq.onnx",
+  "params": 39018,
+  "weight_kib_fp32": 152.4140625,
+  "weight_kib_int8": 38.103515625,
+  "macs": 4433920,
+  "ops_paper_convention": 8867840,
+  "tpc_fw_name": "pytorch",
+  "tpc_target_platform": "imx500",
+  "tpc_version": "v1",
+  "quantization_info": "<model_compression_toolkit.core.common.user_info.UserInformation object at 0x1577f6d50>",
+  "fp32_test_acc": 0.8191,
+  "fp32_mAP": 0.9001497614218072,
+  "int8_test_acc": 0.8175,
+  "int8_mAP": 0.8992903585881752
+}

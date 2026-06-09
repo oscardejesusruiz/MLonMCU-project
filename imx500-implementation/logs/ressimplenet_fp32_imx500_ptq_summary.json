@@ -1,0 +1,7 @@
+{
+  "model": "imx500-implementation/outputs/rpk/ressimplenet_fp32_imx500_ptq/network.rpk",
+  "samples": 503,
+  "log_file": "imx500-implementation/logs/ressimplenet_fp32_imx500_ptq.jsonl",
+  "summary_file": "imx500-implementation/logs/ressimplenet_fp32_imx500_ptq_summary.json",
+  "frame_limit": 500
+}

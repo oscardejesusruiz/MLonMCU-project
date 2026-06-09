@@ -1,0 +1,739 @@
+name: "Sony"
+layer {
+  name: "Placeholder: Placeholder.input.uid1"
+  type: "Placeholder"
+  
+  top: "Placeholder.input.uid1:0"
+    scale_param {
+    "InputShapes": ""
+    "OutputShape": "3x32x32"
+    "Quantize[mn,mx]": [-4.0, 4.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "7.00KB"
+    "ScheduleId": "22"
+
+  }
+
+}
+layer {
+  name: "Transform: transform-2-Placeholder.input.uid1"
+  type: "Transform"
+  bottom: "Placeholder.input.uid1:0"
+  top: "transform-2-Placeholder.input.uid1:0"
+    scale_param {
+    "InputShapes": "3x32x32"
+    "OutputShape": "3x32x32"
+    "Quantize[mn,mx]": [-4.0, 4.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "3.19KB"
+    "ScheduleId": "23"
+
+  }
+
+}
+layer {
+  name: "Transform: transform-2-0-Placeholder.input.uid1"
+  type: "Transform"
+  bottom: "transform-2-Placeholder.input.uid1:0"
+  top: "transform-2-0-Placeholder.input.uid1:0"
+    scale_param {
+    "InputShapes": "3x32x32"
+    "OutputShape": "3x32x32"
+    "Quantize[mn,mx]": [-4.0, 4.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "6.00KB"
+    "ScheduleId": "24"
+
+  }
+
+}
+layer {
+  name: "Transform: transform-2-1-Placeholder.input.uid1"
+  type: "Transform"
+  bottom: "transform-2-0-Placeholder.input.uid1:0"
+  top: "transform-2-1-Placeholder.input.uid1:0"
+    scale_param {
+    "InputShapes": "3x32x32"
+    "OutputShape": "3x32x32"
+    "Quantize[mn,mx]": [-4.0, 4.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "6.38KB"
+    "ScheduleId": "25"
+
+  }
+
+}
+layer {
+  name: "Transform: transform-2-2-Placeholder.input.uid1"
+  type: "Transform"
+  bottom: "transform-2-1-Placeholder.input.uid1:0"
+  top: "transform-2-2-Placeholder.input.uid1:0"
+    scale_param {
+    "InputShapes": "3x32x32"
+    "OutputShape": "3x32x32"
+    "Quantize[mn,mx]": [-4.0, 4.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "6.38KB"
+    "ScheduleId": "26"
+
+  }
+
+}
+layer {
+  name: "Conv2D: /conv1_1_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "transform-2-2-Placeholder.input.uid1:0"
+  top: "/conv1_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "3x32x32, 64x3x3x3, 64"
+    "OutputShape": "64x32x32"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv1_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv1_1_0_bn.layer.bias.uid2:0"
+    "RuntimeMemory": "64.00KB"
+    "ScheduleId": "27"
+
+  }
+  blobs {
+    shape {
+      dim: 64
+      dim: 3
+      dim: 3
+      dim: 3
+    }
+  }
+  blobs {
+    shape {
+      dim: 64
+    }
+  }
+}
+layer {
+  name: "Relu: /conv1_1_2/Relu"
+  type: "Relu"
+  bottom: "/conv1_1_2/Relu:0"
+  top: "/conv1_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x32x32"
+    "OutputShape": "64x32x32"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv1_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv1_1_0_bn.layer.bias.uid2:0"
+    "RuntimeMemory": "64.00KB"
+    
+  }
+
+}
+layer {
+  name: "Conv2D: /conv1_2_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/conv1_1_2/Relu:0"
+  top: "/conv1_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x32x32, 32x64x1x1, 32"
+    "OutputShape": "32x32x32"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv1_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv1_2_0_bn.layer.bias.uid3:0"
+    "RuntimeMemory": "32.00KB"
+    "ScheduleId": "28"
+
+  }
+  blobs {
+    shape {
+      dim: 32
+      dim: 64
+      dim: 1
+      dim: 1
+    }
+  }
+  blobs {
+    shape {
+      dim: 32
+    }
+  }
+}
+layer {
+  name: "Relu: /conv1_2_2/Relu"
+  type: "Relu"
+  bottom: "/conv1_2_2/Relu:0"
+  top: "/conv1_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "32x32x32"
+    "OutputShape": "32x32x32"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv1_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv1_2_0_bn.layer.bias.uid3:0"
+    "RuntimeMemory": "32.00KB"
+    
+  }
+
+}
+layer {
+  name: "Conv2D: /conv1_3_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/conv1_2_2/Relu:0"
+  top: "/conv1_3_2/Relu:0"
+    scale_param {
+    "InputShapes": "32x32x32, 64x32x3x3, 64"
+    "OutputShape": "64x32x32"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv1_3_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv1_3_0_bn.layer.bias.uid4:0"
+    "RuntimeMemory": "64.00KB"
+    "ScheduleId": "29"
+
+  }
+  blobs {
+    shape {
+      dim: 64
+      dim: 32
+      dim: 3
+      dim: 3
+    }
+  }
+  blobs {
+    shape {
+      dim: 64
+    }
+  }
+}
+layer {
+  name: "Relu: /conv1_3_2/Relu"
+  type: "Relu"
+  bottom: "/conv1_3_2/Relu:0"
+  top: "/conv1_3_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x32x32"
+    "OutputShape": "64x32x32"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv1_3_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv1_3_0_bn.layer.bias.uid4:0"
+    "RuntimeMemory": "64.00KB"
+    
+  }
+
+}
+layer {
+  name: "MaxPool: /pool1/MaxPool"
+  type: "MaxPool"
+  bottom: "/conv1_3_2/Relu:0"
+  top: "/pool1/MaxPool:0"
+    scale_param {
+    "InputShapes": "64x32x32"
+    "OutputShape": "64x16x16"
+    "Quantize[mn,mx]": [0, 8.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "16.00KB"
+    "ScheduleId": "30"
+
+  }
+
+}
+layer {
+  name: "Conv2D: /conv2_1_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/pool1/MaxPool:0"
+  top: "/conv2_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x16x16, 32x64x3x3, 32"
+    "OutputShape": "32x16x16"
+    "Quantize[mn,mx]": [0, 4.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv2_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv2_1_0_bn.layer.bias.uid5:0"
+    "RuntimeMemory": "8.00KB"
+    "ScheduleId": "31"
+
+  }
+  blobs {
+    shape {
+      dim: 32
+      dim: 64
+      dim: 3
+      dim: 3
+    }
+  }
+  blobs {
+    shape {
+      dim: 32
+    }
+  }
+}
+layer {
+  name: "Relu: /conv2_1_2/Relu"
+  type: "Relu"
+  bottom: "/conv2_1_2/Relu:0"
+  top: "/conv2_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "32x16x16"
+    "OutputShape": "32x16x16"
+    "Quantize[mn,mx]": [0, 4.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv2_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv2_1_0_bn.layer.bias.uid5:0"
+    "RuntimeMemory": "8.00KB"
+    
+  }
+
+}
+layer {
+  name: "Conv2D: /conv2_2_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/conv2_1_2/Relu:0"
+  top: "/conv2_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "32x16x16, 64x32x1x1, 64"
+    "OutputShape": "64x16x16"
+    "Quantize[mn,mx]": [0, 4.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv2_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv2_2_0_bn.layer.bias.uid6:0"
+    "RuntimeMemory": "16.00KB"
+    "ScheduleId": "32"
+
+  }
+  blobs {
+    shape {
+      dim: 64
+      dim: 32
+      dim: 1
+      dim: 1
+    }
+  }
+  blobs {
+    shape {
+      dim: 64
+    }
+  }
+}
+layer {
+  name: "Relu: /conv2_2_2/Relu"
+  type: "Relu"
+  bottom: "/conv2_2_2/Relu:0"
+  top: "/conv2_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x16x16"
+    "OutputShape": "64x16x16"
+    "Quantize[mn,mx]": [0, 4.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv2_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv2_2_0_bn.layer.bias.uid6:0"
+    "RuntimeMemory": "16.00KB"
+    
+  }
+
+}
+layer {
+  name: "MaxPool: /pool2/MaxPool"
+  type: "MaxPool"
+  bottom: "/conv2_2_2/Relu:0"
+  top: "/pool2/MaxPool:0"
+    scale_param {
+    "InputShapes": "64x16x16"
+    "OutputShape": "64x8x8"
+    "Quantize[mn,mx]": [0, 4.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "4.00KB"
+    "ScheduleId": "33"
+
+  }
+
+}
+layer {
+  name: "Conv2D: /conv3_1_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/pool2/MaxPool:0"
+  top: "/conv3_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x8x8, 128x64x3x3, 128"
+    "OutputShape": "128x8x8"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv3_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv3_1_0_bn.layer.bias.uid7:0"
+    "RuntimeMemory": "8.00KB"
+    "ScheduleId": "34"
+
+  }
+  blobs {
+    shape {
+      dim: 128
+      dim: 64
+      dim: 3
+      dim: 3
+    }
+  }
+  blobs {
+    shape {
+      dim: 128
+    }
+  }
+}
+layer {
+  name: "Relu: /conv3_1_2/Relu"
+  type: "Relu"
+  bottom: "/conv3_1_2/Relu:0"
+  top: "/conv3_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x8x8"
+    "OutputShape": "128x8x8"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv3_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv3_1_0_bn.layer.bias.uid7:0"
+    "RuntimeMemory": "8.00KB"
+    
+  }
+
+}
+layer {
+  name: "Conv2D: /conv3_2_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/conv3_1_2/Relu:0"
+  top: "/conv3_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x8x8, 128x128x1x1, 128"
+    "OutputShape": "128x8x8"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv3_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv3_2_0_bn.layer.bias.uid8:0"
+    "RuntimeMemory": "8.00KB"
+    "ScheduleId": "35"
+
+  }
+  blobs {
+    shape {
+      dim: 128
+      dim: 128
+      dim: 1
+      dim: 1
+    }
+  }
+  blobs {
+    shape {
+      dim: 128
+    }
+  }
+}
+layer {
+  name: "Relu: /conv3_2_2/Relu"
+  type: "Relu"
+  bottom: "/conv3_2_2/Relu:0"
+  top: "/conv3_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x8x8"
+    "OutputShape": "128x8x8"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv3_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv3_2_0_bn.layer.bias.uid8:0"
+    "RuntimeMemory": "8.00KB"
+    
+  }
+
+}
+layer {
+  name: "MaxPool: /pool3/MaxPool"
+  type: "MaxPool"
+  bottom: "/conv3_2_2/Relu:0"
+  top: "/pool3/MaxPool:0"
+    scale_param {
+    "InputShapes": "128x8x8"
+    "OutputShape": "128x4x4"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "2.00KB"
+    "ScheduleId": "36"
+
+  }
+
+}
+layer {
+  name: "Conv2D: /conv4_1_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/pool3/MaxPool:0"
+  top: "/conv4_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x4x4, 64x128x3x3, 64"
+    "OutputShape": "64x4x4"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv4_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv4_1_0_bn.layer.bias.uid9:0"
+    "RuntimeMemory": "1.00KB"
+    "ScheduleId": "37"
+
+  }
+  blobs {
+    shape {
+      dim: 64
+      dim: 128
+      dim: 3
+      dim: 3
+    }
+  }
+  blobs {
+    shape {
+      dim: 64
+    }
+  }
+}
+layer {
+  name: "Relu: /conv4_1_2/Relu"
+  type: "Relu"
+  bottom: "/conv4_1_2/Relu:0"
+  top: "/conv4_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x4x4"
+    "OutputShape": "64x4x4"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv4_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv4_1_0_bn.layer.bias.uid9:0"
+    "RuntimeMemory": "1.00KB"
+    
+  }
+
+}
+layer {
+  name: "Conv2D: /conv4_2_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/conv4_1_2/Relu:0"
+  top: "/conv4_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "64x4x4, 128x64x3x3, 128"
+    "OutputShape": "128x4x4"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv4_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv4_2_0_bn.layer.bias.uid10:0"
+    "RuntimeMemory": "2.00KB"
+    "ScheduleId": "38"
+
+  }
+  blobs {
+    shape {
+      dim: 128
+      dim: 64
+      dim: 3
+      dim: 3
+    }
+  }
+  blobs {
+    shape {
+      dim: 128
+    }
+  }
+}
+layer {
+  name: "Relu: /conv4_2_2/Relu"
+  type: "Relu"
+  bottom: "/conv4_2_2/Relu:0"
+  top: "/conv4_2_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x4x4"
+    "OutputShape": "128x4x4"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv4_2_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv4_2_0_bn.layer.bias.uid10:0"
+    "RuntimeMemory": "2.00KB"
+    
+  }
+
+}
+layer {
+  name: "MaxPool: /pool4/MaxPool"
+  type: "MaxPool"
+  bottom: "/conv4_2_2/Relu:0"
+  top: "/pool4/MaxPool:0"
+    scale_param {
+    "InputShapes": "128x4x4"
+    "OutputShape": "128x2x2"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "512B"
+    "ScheduleId": "39"
+
+  }
+
+}
+layer {
+  name: "Conv2D: /conv5_1_0_bn/layer/Conv"
+  type: "Convolution"
+  bottom: "/pool4/MaxPool:0"
+  top: "/conv5_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x2x2, 128x128x1x1, 128"
+    "OutputShape": "128x2x2"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 16
+    "ConstInputs": "/conv5_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv5_1_0_bn.layer.bias.uid11:0"
+    "RuntimeMemory": "512B"
+    "ScheduleId": "40"
+
+  }
+  blobs {
+    shape {
+      dim: 128
+      dim: 128
+      dim: 1
+      dim: 1
+    }
+  }
+  blobs {
+    shape {
+      dim: 128
+    }
+  }
+}
+layer {
+  name: "Relu: /conv5_1_2/Relu"
+  type: "Relu"
+  bottom: "/conv5_1_2/Relu:0"
+  top: "/conv5_1_2/Relu:0"
+    scale_param {
+    "InputShapes": "128x2x2"
+    "OutputShape": "128x2x2"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/conv5_1_0_bn/WeightsSymmetricQuantizer:0"
+    "ConstInputs": "Variable.conv5_1_0_bn.layer.bias.uid11:0"
+    "RuntimeMemory": "512B"
+    
+  }
+
+}
+layer {
+  name: "Transform: transform-1-(F)/conv5_1_0_bn/layer/Conv"
+  type: "Transform"
+  bottom: "/conv5_1_2/Relu:0"
+  top: "transform-1-(F)/conv5_1_0_bn/layer/Conv:0"
+    scale_param {
+    "InputShapes": "128x2x2"
+    "OutputShape": "128x2x2"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "8.00KB"
+    "ScheduleId": "41"
+
+  }
+
+}
+layer {
+  name: "Reshape: /Reshape"
+  type: "Reshape"
+  bottom: "transform-1-(F)/conv5_1_0_bn/layer/Conv:0"
+  top: "/Reshape:0"
+    scale_param {
+    "InputShapes": "128x2x2"
+    "OutputShape": "512"
+    "Quantize[mn,mx]": [0, 2.0]
+    "QuantizeBits": 8
+    "HasScratch": "true"
+    
+    "RuntimeMemory": "512B"
+    "ScheduleId": "42"
+
+  }
+
+}
+layer {
+  name: "MatMulBias: /fc/layer/Gemm"
+  type: "MatMulBias"
+  bottom: "/Reshape:0"
+  top: "/fc/layer/Gemm:0"
+    scale_param {
+    "InputShapes": "512, 512x10, 10"
+    "OutputShape": "10"
+    "Quantize[mn,mx]": [-8.0, 8.0]
+    "QuantizeBits": 8
+    "ConstInputs": "/fc/layer/Gemm_sr_adapted:0"
+    "ConstInputs": "Variable.fc.layer.bias.uid12:0"
+    "RuntimeMemory": "32B"
+    "ScheduleId": "43"
+
+  }
+  blobs {
+    shape {
+      dim: 512
+      dim: 10
+    }
+  }
+  blobs {
+    shape {
+      dim: 10
+    }
+  }
+}
+layer {
+  name: "Transform: transform-0-/fc/layer/Gemm"
+  type: "Transform"
+  bottom: "/fc/layer/Gemm:0"
+  top: "transform-0-/fc/layer/Gemm:0"
+    scale_param {
+    "InputShapes": "10"
+    "OutputShape": "10"
+    "Quantize[mn,mx]": [-8.0, 8.0]
+    "QuantizeBits": 8
+    
+    "RuntimeMemory": "32B"
+    "ScheduleId": "44"
+
+  }
+
+}
+layer {
+  name: "Output: Output.output.uid13"
+  type: "Output"
+  bottom: "transform-0-/fc/layer/Gemm:0"
+  
+    scale_param {
+    "InputShapes": "10"
+    
+    
+    
+    "RuntimeMemory": "0B"
+    "ScheduleId": "45"
+
+  }
+
+}
+layer{
+  name: "nascifarnet_fp32_ptq_imx500_ptq"
+  type: "MemoryReport"
+  scale_param {
+   
+    RuntimeMemoryPhysicalSize: "103.00KB"
+    ModelMemoryPhysicalSize: "327.19KB"
+    ReservedMemory: "1.00KB"
+    MemoryUsage: "431.19KB"
+    TotalMemoryAvailableOnChip: "8.00MB"
+    MemoryUtilization: "6%"
+    FitInChip: "true"
+    InputPersistent: "true"
+    Hash: "nascifarnet_fp32_ptq_imx500_ptq"
+    InputPersistenceCost: "7.00KB"
+      
+   LargestLayer: "(F)/conv1_1_0_bn/layer/Conv,(F)/conv1_3_0_bn/layer/Conv"
+  }
+}

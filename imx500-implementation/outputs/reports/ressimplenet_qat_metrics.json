@@ -1,0 +1,20 @@
+{
+  "tag": "ressimplenet_qat",
+  "model": "ressimplenet",
+  "checkpoint": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/pc-implementation/trained_models_2/ressimplenet_qat.pt",
+  "output_dir": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/models/ressimplenet_qat",
+  "export_path": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/onnx/ressimplenet_qat_imx500_ptq.onnx",
+  "params": 372512,
+  "weight_kib_fp32": 1455.125,
+  "weight_kib_int8": 363.78125,
+  "macs": 18449664,
+  "ops_paper_convention": 36899328,
+  "tpc_fw_name": "pytorch",
+  "tpc_target_platform": "imx500",
+  "tpc_version": "v1",
+  "quantization_info": "<model_compression_toolkit.core.common.user_info.UserInformation object at 0x14bc86210>",
+  "fp32_test_acc": 0.882,
+  "fp32_mAP": 0.9473591028350066,
+  "int8_test_acc": 0.8832,
+  "int8_mAP": 0.9470560228658144
+}

@@ -1,0 +1,7 @@
+{
+  "model": "imx500-implementation/outputs/rpk/deeper_qat_imx500_ptq/network.rpk",
+  "samples": 501,
+  "log_file": "imx500-implementation/logs/deeper_qat_imx500_ptq.jsonl",
+  "summary_file": "imx500-implementation/logs/deeper_qat_imx500_ptq_summary.json",
+  "frame_limit": 500
+}

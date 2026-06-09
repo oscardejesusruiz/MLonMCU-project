@@ -1,0 +1,22 @@
+{
+  "Memory Report": {
+    "Name": "ressimplenet_fp32_imx500_ptq",
+    "Runtime Memory Physical Size": "94.00KB",
+    "Model Memory Physical Size": "465.69KB",
+    "Reserved Memory": "1.00KB",
+    "Memory Usage": "560.69KB",
+    "Total Memory Available On Chip": "8.00MB",
+    "Memory Utilization": "7%",
+    "Fit In Chip": true,
+    "Input Persistent": true,
+    "Networks": [
+      {
+        "Hash": "ressimplenet_fp32_imx500_ptq",
+        "Name": "ressimplenet_fp32_imx500_ptq",
+        "Runtime Memory Physical Size": "94.00KB",
+        "Model Memory Physical Size": "465.69KB",
+        "Input Persistence Cost": "7.00KB"
+      }
+    ]
+  }
+}

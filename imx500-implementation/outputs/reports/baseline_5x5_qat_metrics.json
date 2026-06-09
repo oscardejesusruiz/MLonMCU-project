@@ -1,0 +1,20 @@
+{
+  "tag": "baseline_5x5_qat",
+  "model": "baseline_5x5",
+  "checkpoint": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/pc-implementation/trained_models_2/baseline_5x5_qat.pt",
+  "output_dir": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/models/baseline_5x5_qat",
+  "export_path": "/Users/alexandre/Documents/ETHZ/Machine Learning on Microcontrollers FS2026/Project/ml-on-microcontrollers/imx500-implementation/outputs/onnx/baseline_5x5_qat_imx500_ptq.onnx",
+  "params": 89578,
+  "weight_kib_fp32": 349.9140625,
+  "weight_kib_int8": 87.478515625,
+  "macs": 12298240,
+  "ops_paper_convention": 24596480,
+  "tpc_fw_name": "pytorch",
+  "tpc_target_platform": "imx500",
+  "tpc_version": "v1",
+  "quantization_info": "<model_compression_toolkit.core.common.user_info.UserInformation object at 0x149c57510>",
+  "fp32_test_acc": 0.8114,
+  "fp32_mAP": 0.8931961196535928,
+  "int8_test_acc": 0.8104,
+  "int8_mAP": 0.8929957888856446
+}

@@ -1,0 +1,22 @@
+{
+  "Memory Report": {
+    "Name": "deeper_qat_imx500_ptq",
+    "Runtime Memory Physical Size": "47.00KB",
+    "Model Memory Physical Size": "150.16KB",
+    "Reserved Memory": "1.00KB",
+    "Memory Usage": "198.16KB",
+    "Total Memory Available On Chip": "8.00MB",
+    "Memory Utilization": "3%",
+    "Fit In Chip": true,
+    "Input Persistent": true,
+    "Networks": [
+      {
+        "Hash": "deeper_qat_imx500_ptq",
+        "Name": "deeper_qat_imx500_ptq",
+        "Runtime Memory Physical Size": "47.00KB",
+        "Model Memory Physical Size": "150.16KB",
+        "Input Persistence Cost": "7.00KB"
+      }
+    ]
+  }
+}
