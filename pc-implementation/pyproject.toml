@@ -1,0 +1,19 @@
+[project]
+name = "ml-on-mcu-cifar10"
+version = "0.1.0"
+description = "CIFAR-10 image classification for MCU deployment (CMSIS-NN, MAX78000, IMX500)"
+requires-python = ">=3.11"
+dependencies = [
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "numpy>=1.26",
+    "matplotlib>=3.8",
+    "tqdm>=4.66",
+    "scikit-learn>=1.8.0",
+    "pyserial>=3.5",
+    "visualtorch>=0.2.4",
+    "torchview>=0.2.7",
+]
+
+[tool.uv]
+package = false

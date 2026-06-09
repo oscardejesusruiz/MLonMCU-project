@@ -1,0 +1,42 @@
+PC MODEL EVALUATION — float vs MAX78000-realistic int8 PTQ
+=========================================================================================================
+Quantization pipeline (training/quantize.py::quantize_model_ptq):
+  0. BN fold     : every Conv2d→BatchNorm2d pair fused into
+                   the conv weight/bias (same step the MAX78000
+                   does via bn_fuser_v2.py at device synthesis)
+  1. weight quant: symmetric per-tensor int8, power-of-two=True
+                   scale = max(|w_folded|) / 127
+  2. activations : calibrated over 20 train batches (~5120 imgs)
+  3. fake-quant  : pre-forward hooks round each Conv/Linear input
+                   to the int8 grid before the multiply
+
+This matches what the MAX78000 actually deploys — fp32 models
+will show a real PTQ drop, QAT models should recover most of it.
+
+model                      params   size_fp32   size_int8       MACs/inf   MACs/inf [M]   fp32_acc   int8_acc
+--------------------------------------------------------------------------------------------------------------
+baseline_fp32              38,890      151.9K       38.0K      4,433,920          4.434     80.98%     80.77%
+baseline_qat               38,890      151.9K       38.0K      4,433,920          4.434     81.15%     81.29%
+deeper_fp32               141,034      550.9K      137.7K      7,963,904          7.964     85.14%     84.57%
+deeper_qat                141,034      550.9K      137.7K      7,963,904          7.964     85.69%     85.57%
+mininet_fp32              316,458     1236.2K      309.0K     24,478,976         24.479     88.63%     88.42%
+mininet_qat               316,458     1236.2K      309.0K     24,478,976         24.479     88.59%     88.34%
+improved_fp32              39,018      152.4K       38.1K      4,433,920          4.434     81.40%     81.51%
+improved_qat               39,018      152.4K       38.1K      4,433,920          4.434     81.91%     81.70%
+nascifarnet_fp32          301,770     1178.8K      294.7K     36,180,992         36.181     87.61%     87.46%
+nascifarnet_qat           301,770     1178.8K      294.7K     36,180,992         36.181     88.95%     88.76%
+ressimplenet_fp32         372,512     1455.1K      363.8K     18,449,664         18.450     86.90%     86.72%
+ressimplenet_qat          372,512     1455.1K      363.8K     18,449,664         18.450     88.20%     87.74%
+
+Column legend
+-------------
+  params         : total learnable parameters
+  size_fp32      : weight bytes assuming fp32 storage (4 B/param)
+  size_int8      : weight bytes assuming int8 storage (1 B/param)
+  MACs/inf       : multiply-accumulate operations per inference
+                   (raw count; 1 MAC = 1 multiply + 1 add)
+  MACs/inf [M]   : same number expressed in millions for readability
+  fp32_acc       : top-1 CIFAR-10 test accuracy with float weights
+                   AND BN preserved as runtime layer
+  int8_acc       : top-1 CIFAR-10 test accuracy after BN folding,
+                   weight quantization, and activation fake-quant
