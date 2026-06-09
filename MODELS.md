@@ -21,18 +21,18 @@ bias add (`Cout` extra adds per spatial position).
 
 ## Variant summary
 
-| # | Variant | Backbone | Deploys on MAX78000? | Family / source |
-|---|---|---|---|---|
-| 1 | `baseline_5x5`   | 3-conv CNN, **5×5 kernels** | ✗ (no 5×5 on MAX78000) | Lai et al. CMSIS-NN, paper-faithful (arXiv 2018) |
-| 2 | `baseline`       | 3-conv CNN, 3×3 kernels | ✓ | Lai et al. CMSIS-NN, 3×3 adaptation |
-| 3 | `improved`       | baseline + **BN + Dropout** | ✓ | this work (recipe ablation on #2) |
-| 4 | `deeper`         | improved + 2 extra stages | ✓ | this work (depth ablation on #3) |
-| 5 | `mininet`        | 7-conv VGG-Micro | ✓ | Banbury et al. MicroNets (MLSys 2021) |
-| 6 | `nascifarnet`    | NAS-found 10-conv | ✓ | Maxim ai8x-training (2021) |
-| 7 | `ressimplenet`   | 14-conv with 3 residuals | ✓ | HasanPour et al. SimpleNet (arXiv 2016) |
+| # | Variant | Backbone | MAX78000 | IMX500 | Family / source |
+|---|---|---|---|---|---|
+| 1 | `baseline_5x5`   | 3-conv CNN, **5×5 kernels** | ✗ (no 5×5 on MAX78000) | ✓ | Lai et al. CMSIS-NN, paper-faithful (arXiv 2018) |
+| 2 | `baseline`       | 3-conv CNN, 3×3 kernels | ✓ | ✓ | Lai et al. CMSIS-NN, 3×3 adaptation |
+| 3 | `improved`       | baseline + **BN + Dropout** | ✓ | ✓ | this work (recipe ablation on #2) |
+| 4 | `deeper`         | improved + 2 extra stages | ✓ | ✓ | this work (depth ablation on #3) |
+| 5 | `mininet`        | 7-conv VGG-Micro | ✓ | ✓ | Banbury et al. MicroNets (MLSys 2021) |
+| 6 | `nascifarnet`    | NAS-found 10-conv | ✓ | ✓ | Maxim ai8x-training (2021) |
+| 7 | `ressimplenet`   | 14-conv with 3 residuals | ✓ | ✓ | HasanPour et al. SimpleNet (arXiv 2016) |
 
 **MAX78000 active variants (6):** `baseline`, `improved`, `deeper`, `mininet`, `nascifarnet`, `ressimplenet`.
-**PC-only (1):** `baseline_5x5` (the 5×5 paper-faithful reference).
+**IMX500 active variants (7):** all of the above, plus `baseline_5x5` (the IMX500 has no kernel-size restriction).
 
 The four CMSIS-NN-style models (#1-#4) all use the same Conv-BN-ReLU-Pool
 template at different widths and depths. `mininet` (#5) is narrower and
@@ -51,17 +51,34 @@ Each variant produces two deployable models. Tags:
 | **fp32 + PTQ** | `_fp32` (+ `_fp32_ptq` snapshot on PC) | from scratch, 80 epochs | `run_experiment.py` (PC) / `train_max78000_models.sh ... fp32` (MAX78000) |
 | **QAT** (Quantization-Aware Training) | `_qat` (PC) / `_qat_train` (MAX78000) | load `_fp32` checkpoint, 40 ep fine-tune, switch at epoch 5 | `run_experiment.py --load-fp32 ... --qat-start-epoch 5` (PC) / `train_max78000_models.sh ... qat` (MAX78000) |
 
-All int8 numerics use **CMSIS-NN q7 semantics** on PC (per-tensor symmetric,
-power-of-two scales). The MAX78000 deployment adds per-layer `output_shift`
-and clamping — typical delta vs PC PTQ simulation: 5–20 pp on the int8 number
-(the gap is part of the paper's findings; QAT recovers most of it).
+Each `*.pt` checkpoint produced by the PC pipeline is then quantized by
+**two completely different toolchains**, one per deployment target:
+
+| Target | PTQ flow | Granularity |
+|---|---|---|
+| MAX78000 | `bn_fuser_v2.py` + `quantize.py` (ai8x-synthesis) → C project | per-tensor symmetric, power-of-two scales, per-layer `output_shift` + clamping |
+| IMX500 | `post_training_compress.py` (MCT, IMX500 TPC v1) → ONNX → `imxconv-pt` → `.rpk` | per-channel scales with calibrated activation ranges |
+
+The PC-side simulator (`scripts/eval_int8.py`) uses **CMSIS-NN q7 semantics**
+(per-tensor symmetric, power-of-two) and is therefore the ideal-hardware
+upper bound for the **MAX78000 path**. Typical deltas:
+
+- PC PTQ sim ↔ MAX78000 device: 5–20 pp drop (per-layer `output_shift` + clamping). QAT recovers most of it.
+- IMX500 device vs PC fp32: **≤0.3 pp drop across all 7 variants** — the
+  per-channel + activation-calibrated PTQ is gentle enough that QAT brings
+  only marginal additional gains.
+
+The size of this gap as a function of the silicon's quantization
+granularity is one of the headline findings of the project.
 
 ---
 
-## 1. `baseline_5x5` — Paper-faithful reference (PC-only)
+## 1. `baseline_5x5` — Paper-faithful reference (PC + IMX500)
 
-The exact architecture from **Lai et al. 2018, Table 1**. PC reference
-only — MAX78000 only supports 1×1 and 3×3 standard convolutions.
+The exact architecture from **Lai et al. 2018, Table 1**. Excluded from
+the MAX78000 deployment because the accelerator only supports 1×1 and
+3×3 standard convolutions, but deploys natively on the IMX500 (no
+kernel-size restriction).
 
 ### Layer table
 
@@ -260,36 +277,49 @@ arXiv:1608.06037 (2016).
 
 ## 8. Side-by-side comparison
 
-CIFAR-10 at 32×32 input. fp32 is the trained float32 accuracy; int8 PTQ
-is the PC-side simulation (`scripts/eval_int8.py`, BN-folded); int8 QAT
-is from the QAT-fine-tuned checkpoint under the same simulator.
+CIFAR-10 at 32×32 input. fp32 is the trained float32 accuracy.
 
-| Variant          | Params  | Wt KiB | MACs (M) | fp32 acc | int8 PTQ | int8 QAT | Notes |
-|------------------|--------:|-------:|---------:|---------:|---------:|---------:|---|
-| `baseline_5x5`   | 89,578  | 87.5   | 12.30    | 79.79    | 79.76    | 79.04    | PC-only, paper reproduction |
-| `baseline`       | 38,890  | 38.0   | 4.43     | 80.98    | 75.50    | 80.95    | |
-| `improved`       | 39,018  | 38.1   | 4.43     | 81.70    | 62.38    | 82.86    | QAT recovers all of the PTQ drop |
-| `deeper`         | 141,034 | 137.7  | 7.96     | 83.17    | 65.71    | 84.74    | |
-| `mininet`        | 316,000 | 408.2  | 23.00    | 88.22    | 69.21    | 84.61    | best fp32 in the zoo |
-| `nascifarnet`    | 303,000 | ~300   | 36.00    | 87.02    | 80.50*   | 89.25    | NAS-optimized |
-| `ressimplenet`   | 374,000 | ~370   | 18.00    | 86.39    | 78.00*   | 83.07    | residual |
+**PC + MAX78000 column block.** int8 PTQ is the PC-side simulation
+(`scripts/eval_int8.py`, BN-folded, MAX78000-realistic per-tensor
+symmetric quantization). int8 QAT is from the QAT-fine-tuned checkpoint
+under the same simulator. These numbers stand in for the MAX78000
+deployment as an "ideal-hardware" upper bound (real device numbers in
+`max78000-implementation/reports/`).
+
+| Variant          | Params  | Wt KiB | MACs (M) | fp32 acc | int8 PTQ (MAX78000 sim) | int8 QAT (MAX78000 sim) | Notes |
+|------------------|--------:|-------:|---------:|---------:|------------------------:|------------------------:|---|
+| `baseline_5x5`   | 89,578  | 87.5   | 12.30    | 79.79    | 79.76                   | 79.04                   | not deployed on MAX78000 — IMX500 only |
+| `baseline`       | 38,890  | 38.0   | 4.43     | 80.98    | 75.50                   | 80.95                   | |
+| `improved`       | 39,018  | 38.1   | 4.43     | 81.70    | 62.38                   | 82.86                   | QAT recovers all of the PTQ drop |
+| `deeper`         | 141,034 | 137.7  | 7.96     | 83.17    | 65.71                   | 84.74                   | |
+| `mininet`        | 316,000 | 408.2  | 23.00    | 88.22    | 69.21                   | 84.61                   | best fp32 in the zoo |
+| `nascifarnet`    | 303,000 | ~300   | 36.00    | 87.02    | 80.50*                  | 89.25                   | NAS-optimized |
+| `ressimplenet`   | 374,000 | ~370   | 18.00    | 86.39    | 78.00*                  | 83.07                   | residual |
 
 \* `int8 PTQ` for `nascifarnet` and `ressimplenet` may show "n/a" if
 `eval_pre_synth.sh` ran before the synthesis-arch-mapping fix; re-run
 `./synthesize_all.sh <v>` + `./eval_pre_synth.sh fp32 <v>` to fill in.
 
+**IMX500 column block.** Real device numbers from
+`imx500-implementation/reports/summary.md`. PTQ is MCT
+`pytorch_post_training_quantization` against the IMX500 TPC v1; QAT
+column is the same MCT PTQ but applied to the QAT-trained PC checkpoint.
+
+| Variant          | fp32 acc | int8 PTQ (IMX500) | int8 QAT (IMX500) | HW inf. (ms) | Δ (fp32 → QAT) |
+|------------------|---------:|------------------:|------------------:|-------------:|---------------:|
+| `baseline_5x5`   | 79.79    | 79.83             | 81.04             | 1.52         | +1.25 pp |
+| `baseline`       | 80.98    | 80.73             | 80.94             | 1.53         | -0.04 pp |
+| `improved`       | 81.40    | 81.48             | 81.75             | 1.53         | +0.35 pp |
+| `deeper`         | 85.14    | 85.00             | 85.62             | 1.53         | +0.48 pp |
+| `mininet`        | 88.63    | 88.48             | 88.52             | 1.53         | -0.11 pp |
+| `nascifarnet`    | 87.61    | 87.64             | 88.95             | 1.53         | +1.34 pp |
+| `ressimplenet`   | 86.90    | 86.97             | 88.32             | 1.53         | +1.42 pp |
+
 ### Headline reading
 
-- **PTQ hurts substantially** on the BN-bearing variants (15-20 pp drop on
-  improved/deeper/mininet) due to BN folding redistributing per-channel
-  weight magnitudes — the cost of per-tensor symmetric quantization at
-  fixed-op-set hardware.
-- **QAT recovers almost all of the PTQ drop**. For improved and deeper,
-  int8 QAT even slightly *exceeds* fp32 (the fake-quant noise acts as
-  regularization).
-- **`baseline` is barely affected by PTQ** because it has no BN to fold.
-  This is the "best case" for naive PTQ — and exactly why the other
-  variants need QAT.
+- **MAX78000 path:** PTQ hurts substantially on BN-bearing variants (15-20 pp drop on improved/deeper/mininet) due to BN folding redistributing per-channel weight magnitudes — the cost of per-tensor symmetric quantization at fixed-op-set hardware. **QAT recovers almost all of the PTQ drop**; for improved and deeper, int8 QAT even slightly *exceeds* fp32 (the fake-quant noise acts as regularization). **`baseline` is barely affected** because it has no BN to fold — the "best case" for naive per-tensor PTQ, and exactly why the other variants need QAT.
+- **IMX500 path:** PTQ alone hits ≤0.3 pp drop across the board — the per-channel scales + activation calibration in the MCT IMX500 TPC v1 absorb the BN-fold disruption that destroys the per-tensor MAX78000 path. QAT brings only marginal additional gains (typically +0-1.5 pp).
+- **HW inference time is essentially constant (~1.53 ms) across all 7 IMX500 models** — Sony dimensions the on-sensor accelerator to absorb a CIFAR-class network at the camera's native frame rate, so the bottleneck is the I/O loop (~90 ms frame-to-frame), not the inference itself.
 
 ### Reference: SOTA from the literature
 
@@ -305,15 +335,19 @@ is from the QAT-fine-tuned checkpoint under the same simulator.
 
 ## 9. Implementation status
 
-| Variant         | PC class                  | MAX78000 arch              | YAML                          | Synthesis status |
-|-----------------|---------------------------|-----------------------------|--------------------------------|------------------|
-| `baseline_5x5`  | `CMSISNNBaseline5x5`      | n/a (5×5 unsupported)      | —                              | PC-only |
-| `baseline`      | `CMSISNNBaseline`         | `ai85net_cmsis_baseline`   | `networks/network_baseline.yaml` | ✓ |
-| `improved`      | `CMSISNNImproved`         | `ai85net_cmsis_improved`   | `networks/network_improved.yaml` | ✓ |
-| `deeper`        | `CMSISNNDeeper`           | `ai85net_cmsis_deeper`     | `networks/network_deeper.yaml` | ✓ |
-| `mininet`       | `MiniMobileNet`           | `ai85net_cmsis_mininet`    | `networks/network_mininet.yaml` | ✓ |
-| `nascifarnet`   | `NASCifarNet`             | `ai85nascifarnet`          | `networks/network_nascifarnet.yaml` | ✓ |
-| `ressimplenet`  | `ResSimpleNet`            | `ai85ressimplenetbn`       | `networks/network_ressimplenet.yaml` | ✓ |
+| Variant         | PC class                  | MAX78000 arch              | YAML                          | MAX78000 synthesis | IMX500 deploy |
+|-----------------|---------------------------|-----------------------------|--------------------------------|---------------------|----------------|
+| `baseline_5x5`  | `CMSISNNBaseline5x5`      | n/a (5×5 unsupported)      | —                              | ✗                   | ✓ (3 flavours) |
+| `baseline`      | `CMSISNNBaseline`         | `ai85net_cmsis_baseline`   | `networks/network_baseline.yaml` | ✓                   | ✓ (3 flavours) |
+| `improved`      | `CMSISNNImproved`         | `ai85net_cmsis_improved`   | `networks/network_improved.yaml` | ✓                   | ✓ (3 flavours) |
+| `deeper`        | `CMSISNNDeeper`           | `ai85net_cmsis_deeper`     | `networks/network_deeper.yaml` | ✓                   | ✓ (3 flavours) |
+| `mininet`       | `MiniMobileNet`           | `ai85net_cmsis_mininet`    | `networks/network_mininet.yaml` | ✓                   | ✓ (3 flavours) |
+| `nascifarnet`   | `NASCifarNet`             | `ai85nascifarnet`          | `networks/network_nascifarnet.yaml` | ✓                   | ✓ (3 flavours) |
+| `ressimplenet`  | `ResSimpleNet`            | `ai85ressimplenetbn`       | `networks/network_ressimplenet.yaml` | ✓                   | ✓ (3 flavours) |
+
+"3 flavours" on the IMX500 side = `_fp32`, `_fp32_ptq`, `_qat` PC
+checkpoints, each separately quantized by MCT and packaged into a
+`network.rpk`. See [`imx500-implementation/README.md`](imx500-implementation/README.md).
 
 ### MAX78000 notes per variant
 
@@ -371,7 +405,8 @@ The headline figure for the paper is the three-bar comparison
    - `max78000-implementation/synthesize_all.sh::synth_one` (arch mapping case)
    - `max78000-implementation/eval_pre_synth.sh` (arch mapping case)
    - `max78000-implementation/scripts/verify_fold.py::_SPECIAL_ARCH` and `scripts/eval_full.py::_SPECIAL_ARCH` if the arch name doesn't follow the `ai85net_cmsis_<v>` convention
-6. Train, generate reports, drop numbers into §8.
+6. **For IMX500 deployment**: usually nothing to do — `imx500-implementation/post_training_compress.py` auto-discovers `<v>_*.pt` under `pc-implementation/trained_models/` and runs MCT PTQ + ONNX export with no per-variant configuration. The only gotcha is variant-name resolution: if the checkpoint stem doesn't match a key in `MODEL_REGISTRY`, add an entry to `MODEL_NAME_MAP` in `post_training_compress.py` (e.g. `improved_distill → improved`). Then re-run `convert_all_onnx.sh` (host) and `package_all_rpk.sh` (Pi).
+7. Train, generate reports, drop numbers into §8.
 
 ---
 
@@ -391,3 +426,6 @@ The headline figure for the paper is the three-bar comparison
 - Maxim Integrated (Analog Devices). *ai8x-training reference networks
   (ai85nascifarnet, ai85ressimplenet).*
   https://github.com/MaximIntegratedAI/ai8x-training, 2021.
+- Sony Semiconductor. *Model Compression Toolkit (MCT) — IMX500 target
+  platform capabilities (TPC v1).*
+  https://github.com/sony/model_optimization, 2023.
