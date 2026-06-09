@@ -1,0 +1,64 @@
+Log file for this run: /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-training/logs/2026.05.30-160806/2026.05.30-160806.log
+Configuring device: MAX78000, simulate=True.
+=> loading checkpoint /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-synthesis/trained/deeper_qat_q.pth.tar
+=> Checkpoint contents:
++----------------------+-------------+----------------------+
+| Key                  | Type        | Value                |
+|----------------------+-------------+----------------------|
+| arch                 | str         | ai85net_cmsis_deeper |
+| compression_sched    | dict        |                      |
+| epoch                | int         | 30                   |
+| extras               | dict        |                      |
+| optimizer_state_dict | dict        |                      |
+| optimizer_type       | type        | Adam                 |
+| state_dict           | OrderedDict |                      |
++----------------------+-------------+----------------------+
+
+=> Checkpoint['extras'] contents:
++-----------------+--------+-------------------+
+| Key             | Type   | Value             |
+|-----------------+--------+-------------------|
+| best_epoch      | int    | 30                |
+| best_mAP        | int    | 0                 |
+| best_top1       | float  | 84.39999999999999 |
+| clipping_method | str    | MAX_BIT_SHIFT     |
+| current_mAP     | int    | 0                 |
+| current_top1    | float  | 84.39999999999999 |
++-----------------+--------+-------------------+
+
+Loaded compression schedule from checkpoint (epoch 30)
+=> loaded 'state_dict' from checkpoint '/Users/oscardejesusruiz/Desktop/project/max78000/ai8x-synthesis/trained/deeper_qat_q.pth.tar'
+Optimizer Type: <class 'torch.optim.sgd.SGD'>
+Optimizer Args: {'lr': 0.1, 'momentum': 0.9, 'dampening': 0, 'weight_decay': 0.0001, 'nesterov': False, 'maximize': False, 'foreach': None, 'differentiable': False, 'fused': None}
+Files already downloaded and verified
+torch.compile() not available, using "eager" mode
+Dataset sizes:
+	test=10000
+--- test (ckpt) ---------------------
+10000 samples (100 per mini-batch)
+Test: [   10/  100]    Loss 0.490095    Top1 84.600000    Top5 99.200000    
+Test: [   20/  100]    Loss 0.465269    Top1 85.100000    Top5 99.200000    
+Test: [   30/  100]    Loss 0.474710    Top1 84.733333    Top5 99.266667    
+Test: [   40/  100]    Loss 0.475932    Top1 84.375000    Top5 99.350000    
+Test: [   50/  100]    Loss 0.473467    Top1 84.520000    Top5 99.360000    
+Test: [   60/  100]    Loss 0.467420    Top1 84.466667    Top5 99.383333    
+Test: [   70/  100]    Loss 0.465456    Top1 84.557143    Top5 99.385714    
+Test: [   80/  100]    Loss 0.461858    Top1 84.762500    Top5 99.312500    
+Test: [   90/  100]    Loss 0.460450    Top1 84.688889    Top5 99.344444    
+Test: [  100/  100]    Loss 0.459558    Top1 84.740000    Top5 99.360000    
+==> Top1: 84.740    Top5: 99.360    Loss: 0.460
+
+==> Confusion:
+[[856   7  31   9   8   3   7  14  43  22]
+ [ 11 922   1   1   0   3   4   1  16  41]
+ [ 40   2 786  37  45  30  38  11   5   6]
+ [ 18   5  45 693  43 106  38  24  14  14]
+ [ 10   3  47  27 842  13  26  29   2   1]
+ [  8   1  25 101  37 776  15  27   5   5]
+ [  6   1  32  33  18  11 891   4   1   3]
+ [ 17   1  17  25  19  31   3 875   3   9]
+ [ 31  12   3   4   0   1   6   3 931   9]
+ [ 21  42   3   5   1   2   0   7  17 902]]
+
+
+Log file for this run: /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-training/logs/2026.05.30-160806/2026.05.30-160806.log

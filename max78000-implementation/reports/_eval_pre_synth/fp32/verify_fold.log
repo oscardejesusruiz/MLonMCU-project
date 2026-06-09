@@ -1,0 +1,21 @@
+variant         fp32 acc  fused acc  agree % max|Δlogit|
+------------------------------------------------------------
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+Files already downloaded and verified
+baseline          79.80%     79.80%  100.00%      0.0000
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+deeper            83.17%     83.17%   99.99%      0.0051
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+improved          81.70%     81.70%  100.00%      0.0028
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+mininet           88.22%     88.23%   99.99%      0.0015
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+nascifarnet       87.02%     87.02%  100.00%      0.0018
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+ressimplenet      86.39%     86.39%  100.00%      0.0014

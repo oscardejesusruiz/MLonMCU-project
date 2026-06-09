@@ -1,0 +1,28 @@
+MAX78000 Profiling results v1.0 — "deeper_qat"
+
+  nb sample(s)     : 1
+  duration         : 1.153 ms
+  macc             : 7,963,904
+  cycles/MACC      : 0.01
+  CPU cycles       : 115,320
+  used stack/heap  : not monitored / 0 bytes
+
+Inference time per node (deeper)
+
+c_id   type         macs       %      cumul %  est. cycles  est. dur (ms)  name        
+0      Conv2d/Pool  884,736    11.1   11.1     12,811       0.128          features.0  
+1      Conv2d/Pool  2,359,296  29.6   40.7     34,163       0.342          features.4  
+2      Conv2d/Pool  1,179,648  14.8   55.5     17,081       0.171          features.8  
+3      Conv2d/Pool  2,359,296  29.6   85.2     34,163       0.342          features.11 
+4      Conv2d/Pool  1,179,648  14.8   100.0    17,081       0.171          features.15 
+5      Conv2d/Pool  1,280      0.0    100.0    18           0.000          classifier.1
+total               7,963,904  100.0  100.0    115,320      1.153                      
+
+Note: per-layer cycles are distributed by MAC count (synthesizer-
+estimated). MAX78000 does not expose layer-by-layer wall-clock from
+a single cnn_start() — for true per-layer timing, re-synthesize with
+`ai8xize.py --unload` (slower, dilates total inference time).
+
+Statistic per tensor
+  I.0   1   i8[1,3,32,32]:3072       input
+  O.0   1   i32[1,10]:40             logits

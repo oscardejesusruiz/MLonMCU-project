@@ -1,0 +1,21 @@
+================================================================================================
+MAX78000 deployment estimate — five active CIFAR-10 variants
+================================================================================================
+
+  baseline    params= 38,890  post_fold= 38,890  wt= 37.98 KiB  util= 8.79%  MACs= 4.43M  latency_lb= 692.8us  fps_ub= 1443
+  improved    params= 39,018  post_fold= 38,762  wt= 37.85 KiB  util= 8.76%  MACs= 4.43M  latency_lb= 692.8us  fps_ub= 1443
+  mininet     params=316,458  post_fold=315,498  wt=308.10 KiB  util=71.32%  MACs=24.48M  latency_lb=3824.8us  fps_ub=  261
+  deeper      params=141,034  post_fold=140,394  wt=137.10 KiB  util=31.74%  MACs= 7.96M  latency_lb=1244.4us  fps_ub=  804
+  nascifarnet  params=301,770  post_fold=300,106  wt=293.07 KiB  util=67.84%  MACs=36.18M  latency_lb=5653.3us  fps_ub=  177
+  ressimplenet  params=372,512  post_fold=370,272  wt=361.59 KiB  util=83.70%  MACs=18.45M  latency_lb=2882.8us  fps_ub=  347
+
+Hardware cap: 442,368 bytes (432 KiB)
+
+Notes:
+  * post_fold = on-device int8 weight count after BN is folded into the preceding conv at synthesis.
+  * latency_lb = best-case theoretical (all 64 procs busy at 1 MAC/cycle @ 100 MHz).
+  * Real on-device latency is typically 5-10x the lower bound for models this small,
+    because depthwise layers can't fill all 64 procs and pool/ReLU overhead dominates.
+  * Cross-check 'wt' and 'MACs' against the table that ai8xize.py prints at synthesis time.
+
+wrote /Users/oscardejesusruiz/Desktop/project/ml-on-microcontrollers/max78000-implementation/reports/models_estimation.json

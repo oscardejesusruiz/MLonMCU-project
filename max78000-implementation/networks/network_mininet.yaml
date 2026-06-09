@@ -1,0 +1,83 @@
+---
+# MAX78000 synthesis config for the VGG-Micro mininet v2 (power-of-2 channels).
+#
+# 6 standard 3x3 convolutions + 1 FC. 32x32 input. Pool-then-conv pattern
+# for downsampling. All channel counts (32, 64, 128) are multiples of 32 so
+# the synthesizer packs cleanly without multipass alignment quirks.
+#
+# Spatial flow:
+#   L1:  32x32x3   → 32x32x32   conv 3x3
+#   L2:  32x32x32  → 16x16x64   pool 2 + conv 3x3
+#   L3:  16x16x64  → 16x16x64   conv 3x3
+#   L4:  16x16x64  →  8x8x64    pool 2 + conv 3x3
+#   L5:   8x8x64   →  8x8x128   conv 3x3
+#   L6:   8x8x128  →  4x4x128   pool 2 + conv 3x3
+#   avgpool: 4x4x128 → 1x1x128
+#   fc: 128 → 10
+
+arch: ai85net_cmsis_mininet
+dataset: CIFAR10
+
+layers:
+  # L1: conv 3x3, 3 → 32                                  (32x32x32)
+  - pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0x0000.0000.0000.0007    # 3 input channels
+    data_format: HWC
+    op: conv2d
+
+  # L2: pool 2 + conv 3x3, 32 → 64                        (16x16x64)
+  - max_pool: 2
+    pool_stride: 2
+    pad: 1
+    activate: ReLU
+    out_offset: 0
+    processors: 0x0000.0000.ffff.ffff    # 32 input channels
+    op: conv2d
+
+  # L3: conv 3x3, 64 → 64                                 (16x16x64)
+  - pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0xffff.ffff.ffff.ffff    # 64 input channels
+    op: conv2d
+
+  # L4: pool 2 + conv 3x3, 64 → 64                         (8x8x64)
+  - max_pool: 2
+    pool_stride: 2
+    pad: 1
+    activate: ReLU
+    out_offset: 0
+    processors: 0xffff.ffff.ffff.ffff    # 64 input channels
+    op: conv2d
+
+  # L5: conv 3x3, 64 → 128 (2 passes of 64 procs)         (8x8x128)
+  - pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0xffff.ffff.ffff.ffff    # 64 input channels
+    op: conv2d
+
+  # L6: pool 2 + conv 3x3, 128 → 128                      (4x4x128)
+  - max_pool: 2
+    pool_stride: 2
+    pad: 1
+    activate: ReLU
+    out_offset: 0
+    processors: 0xffff.ffff.ffff.ffff    # 64-bit (128 ch / 2 passes)
+    op: conv2d
+    output_width: 8
+
+  # avgpool: 4x4 → 1x1
+  - avg_pool: 4
+    pool_stride: 1
+    out_offset: 0x2000
+    processors: 0xffff.ffff.ffff.ffff
+    op: passthrough
+
+  # MLP 128 → 10
+  - op: mlp
+    out_offset: 0
+    output_width: 32
+    processors: 0xffff.ffff.ffff.ffff

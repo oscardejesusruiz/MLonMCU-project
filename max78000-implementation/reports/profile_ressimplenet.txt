@@ -1,0 +1,36 @@
+MAX78000 Profiling results v1.0 — "ressimplenet_qat"
+
+  nb sample(s)     : 1
+  duration         : 2.909 ms
+  macc             : 18,449,664
+  cycles/MACC      : 0.02
+  CPU cycles       : 290,917
+  used stack/heap  : not monitored / 0 bytes
+
+Inference time per node (ressimplenet)
+
+c_id   type         macs        %      cumul %  est. cycles  est. dur (ms)  name      
+0      Conv2d/Pool  442,368     2.4    2.4      6,975        0.070          conv1.0   
+1      Conv2d/Pool  2,949,120   16.0   18.4     46,502       0.465          conv2.0   
+2      Conv2d/Pool  3,686,400   20.0   38.4     58,127       0.581          conv3.0   
+3      Conv2d/Pool  3,686,400   20.0   58.3     58,127       0.581          conv4.0   
+4      Conv2d/Pool  921,600     5.0    63.3     14,531       0.145          conv5.0   
+5      Conv2d/Pool  921,600     5.0    68.3     14,531       0.145          conv6.0   
+6      Conv2d/Pool  2,027,520   11.0   79.3     31,970       0.320          conv7.0   
+7      Conv2d/Pool  1,216,512   6.6    85.9     19,182       0.192          conv8.0   
+8      Conv2d/Pool  1,327,104   7.2    93.1     20,925       0.209          conv9.0   
+9      Conv2d/Pool  663,552     3.6    96.7     10,462       0.105          conv10.0  
+10     Conv2d/Pool  196,608     1.1    97.8     3,100        0.031          conv11.0  
+11     Conv2d/Pool  262,144     1.4    99.2     4,133        0.041          conv12.0  
+12     Conv2d/Pool  147,456     0.8    100.0    2,325        0.023          conv13.0  
+13     Conv2d/Pool  1,280       0.0    100.0    20           0.000          classifier
+total               18,449,664  100.0  100.0    290,917      2.909                    
+
+Note: per-layer cycles are distributed by MAC count (synthesizer-
+estimated). MAX78000 does not expose layer-by-layer wall-clock from
+a single cnn_start() — for true per-layer timing, re-synthesize with
+`ai8xize.py --unload` (slower, dilates total inference time).
+
+Statistic per tensor
+  I.0   1   i8[1,3,32,32]:3072       input
+  O.0   1   i32[1,10]:40             logits

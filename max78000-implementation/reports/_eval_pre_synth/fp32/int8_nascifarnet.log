@@ -1,0 +1,64 @@
+Log file for this run: /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-training/logs/2026.05.30-143925/2026.05.30-143925.log
+Configuring device: MAX78000, simulate=True.
+=> loading checkpoint /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-synthesis/trained/nascifarnet_q.pth.tar
+=> Checkpoint contents:
++----------------------+-------------+-----------------+
+| Key                  | Type        | Value           |
+|----------------------+-------------+-----------------|
+| arch                 | str         | ai85nascifarnet |
+| compression_sched    | dict        |                 |
+| epoch                | int         | 69              |
+| extras               | dict        |                 |
+| optimizer_state_dict | dict        |                 |
+| optimizer_type       | type        | Adam            |
+| state_dict           | OrderedDict |                 |
++----------------------+-------------+-----------------+
+
+=> Checkpoint['extras'] contents:
++-----------------+--------+---------------+
+| Key             | Type   | Value         |
+|-----------------+--------+---------------|
+| best_epoch      | int    | 69            |
+| best_mAP        | int    | 0             |
+| best_top1       | float  | 87.36         |
+| clipping_method | str    | MAX_BIT_SHIFT |
+| current_mAP     | int    | 0             |
+| current_top1    | float  | 87.36         |
++-----------------+--------+---------------+
+
+Loaded compression schedule from checkpoint (epoch 69)
+=> loaded 'state_dict' from checkpoint '/Users/oscardejesusruiz/Desktop/project/max78000/ai8x-synthesis/trained/nascifarnet_q.pth.tar'
+Optimizer Type: <class 'torch.optim.sgd.SGD'>
+Optimizer Args: {'lr': 0.1, 'momentum': 0.9, 'dampening': 0, 'weight_decay': 0.0001, 'nesterov': False, 'maximize': False, 'foreach': None, 'differentiable': False, 'fused': None}
+Files already downloaded and verified
+torch.compile() not available, using "eager" mode
+Dataset sizes:
+	test=10000
+--- test (ckpt) ---------------------
+10000 samples (100 per mini-batch)
+Test: [   10/  100]    Loss 3.351503    Top1 22.000000    Top5 64.600000    
+Test: [   20/  100]    Loss 3.307223    Top1 22.850000    Top5 65.500000    
+Test: [   30/  100]    Loss 3.319228    Top1 23.300000    Top5 65.100000    
+Test: [   40/  100]    Loss 3.325653    Top1 22.675000    Top5 65.225000    
+Test: [   50/  100]    Loss 3.333702    Top1 22.280000    Top5 65.260000    
+Test: [   60/  100]    Loss 3.328286    Top1 22.383333    Top5 65.450000    
+Test: [   70/  100]    Loss 3.306892    Top1 22.228571    Top5 66.028571    
+Test: [   80/  100]    Loss 3.302916    Top1 22.175000    Top5 66.012500    
+Test: [   90/  100]    Loss 3.297552    Top1 22.166667    Top5 66.211111    
+Test: [  100/  100]    Loss 3.290570    Top1 22.100000    Top5 66.340000    
+==> Top1: 22.100    Top5: 66.340    Loss: 3.291
+
+==> Confusion:
+[[  4   0   0 444 509   0   6   0  37   0]
+ [  0   0   0 689 205   0   8   0  98   0]
+ [  0   0   0 693 237   0  70   0   0   0]
+ [  0   0   0 877  84   0  37   0   2   0]
+ [  0   0   0 344 645   0  11   0   0   0]
+ [  0   0   0 927  68   0   5   0   0   0]
+ [  0   0   0 597  78   0 325   0   0   0]
+ [  0   0   0 387 610   0   3   0   0   0]
+ [  0   0   0 355 275   0  11   0 359   0]
+ [  0   0   0 460 413   0  10   0 117   0]]
+
+
+Log file for this run: /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-training/logs/2026.05.30-143925/2026.05.30-143925.log

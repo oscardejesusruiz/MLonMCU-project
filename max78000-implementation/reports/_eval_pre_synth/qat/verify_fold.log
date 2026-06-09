@@ -1,0 +1,21 @@
+variant          qat acc  qat-fused  agree % max|Δlogit|
+------------------------------------------------------------
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+Files already downloaded and verified
+baseline          80.67%     80.67%  100.00%      0.0000
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+deeper            84.18%     84.18%  100.00%      0.0000
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+improved          82.55%     82.55%  100.00%      0.0000
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+mininet           34.76%     34.76%  100.00%      0.0000
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+nascifarnet       86.35%     86.35%  100.00%      0.0000
+Configuring device: MAX78000, simulate=False.
+Configuring device: MAX78000, simulate=False.
+ressimplenet      19.18%     19.18%  100.00%      0.0000

@@ -1,0 +1,64 @@
+Log file for this run: /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-training/logs/2026.05.30-160923/2026.05.30-160923.log
+Configuring device: MAX78000, simulate=True.
+=> loading checkpoint /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-synthesis/trained/mininet_qat_q.pth.tar
+=> Checkpoint contents:
++----------------------+-------------+-----------------------+
+| Key                  | Type        | Value                 |
+|----------------------+-------------+-----------------------|
+| arch                 | str         | ai85net_cmsis_mininet |
+| compression_sched    | dict        |                       |
+| epoch                | int         | 38                    |
+| extras               | dict        |                       |
+| optimizer_state_dict | dict        |                       |
+| optimizer_type       | type        | Adam                  |
+| state_dict           | OrderedDict |                       |
++----------------------+-------------+-----------------------+
+
+=> Checkpoint['extras'] contents:
++-----------------+--------+-------------------+
+| Key             | Type   | Value             |
+|-----------------+--------+-------------------|
+| best_epoch      | int    | 38                |
+| best_mAP        | int    | 0                 |
+| best_top1       | float  | 84.46000000000001 |
+| clipping_method | str    | MAX_BIT_SHIFT     |
+| current_mAP     | int    | 0                 |
+| current_top1    | float  | 84.46000000000001 |
++-----------------+--------+-------------------+
+
+Loaded compression schedule from checkpoint (epoch 38)
+=> loaded 'state_dict' from checkpoint '/Users/oscardejesusruiz/Desktop/project/max78000/ai8x-synthesis/trained/mininet_qat_q.pth.tar'
+Optimizer Type: <class 'torch.optim.sgd.SGD'>
+Optimizer Args: {'lr': 0.1, 'momentum': 0.9, 'dampening': 0, 'weight_decay': 0.0001, 'nesterov': False, 'maximize': False, 'foreach': None, 'differentiable': False, 'fused': None}
+Files already downloaded and verified
+torch.compile() not available, using "eager" mode
+Dataset sizes:
+	test=10000
+--- test (ckpt) ---------------------
+10000 samples (100 per mini-batch)
+Test: [   10/  100]    Loss 0.513266    Top1 84.300000    Top5 99.100000    
+Test: [   20/  100]    Loss 0.483319    Top1 84.800000    Top5 99.200000    
+Test: [   30/  100]    Loss 0.498058    Top1 84.500000    Top5 99.200000    
+Test: [   40/  100]    Loss 0.498176    Top1 84.275000    Top5 99.250000    
+Test: [   50/  100]    Loss 0.491097    Top1 84.680000    Top5 99.240000    
+Test: [   60/  100]    Loss 0.492179    Top1 84.516667    Top5 99.283333    
+Test: [   70/  100]    Loss 0.487029    Top1 84.600000    Top5 99.300000    
+Test: [   80/  100]    Loss 0.484947    Top1 84.612500    Top5 99.312500    
+Test: [   90/  100]    Loss 0.481491    Top1 84.511111    Top5 99.333333    
+Test: [  100/  100]    Loss 0.482274    Top1 84.610000    Top5 99.340000    
+==> Top1: 84.610    Top5: 99.340    Loss: 0.482
+
+==> Confusion:
+[[865   7  27  11  15   2   7   2  50  14]
+ [ 11 919   3   2   1   2   7   0  15  40]
+ [ 34   2 799  26  44  34  39  10   9   3]
+ [ 19   6  34 712  33 115  41  22   9   9]
+ [ 16   0  53  26 836  14  28  24   2   1]
+ [  9   0  38 120  28 755  15  29   1   5]
+ [  2   3  28  36  14  10 892   3   6   6]
+ [ 14   0  18  22  26  34   5 877   0   4]
+ [ 42   8   7   2   1   2   6   3 919  10]
+ [ 21  55   6   6   0   1   4   3  17 887]]
+
+
+Log file for this run: /Users/oscardejesusruiz/Desktop/project/max78000/ai8x-training/logs/2026.05.30-160923/2026.05.30-160923.log

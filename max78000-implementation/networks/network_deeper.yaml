@@ -1,0 +1,73 @@
+---
+# MAX78000 synthesis config for `deeper`: improved + extra conv stages.
+#
+# 5 standard 3x3 convs + GAP + FC. ~140 KiB int8 weights.
+#
+# Spatial flow:
+#   conv1: 32x32x3   → 32x32x32   (conv 3x3)
+#   conv2: 32x32x32  → 16x16x32   (pool 2 + conv 3x3)
+#   conv3: 16x16x32  →  8x8x64    (pool 2 + conv 3x3)
+#   conv4:  8x8x64   →  8x8x64    (conv 3x3)
+#   conv5:  8x8x64   →  4x4x128   (pool 2 + conv 3x3)
+#   avgpool:  4x4x128 → 1x1x128
+#   fc: 128 → 10
+
+arch: ai85net_cmsis_deeper
+dataset: CIFAR10
+
+layers:
+  # conv1
+  - pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0x0000.0000.0000.0007
+    data_format: HWC
+    op: conv2d
+
+  # conv2 (pool 2 + conv)
+  - max_pool: 2
+    pool_stride: 2
+    pad: 1
+    activate: ReLU
+    out_offset: 0
+    processors: 0x0000.0000.ffff.ffff
+    op: conv2d
+
+  # conv3 (pool 2 + conv)
+  - max_pool: 2
+    pool_stride: 2
+    pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0x0000.0000.ffff.ffff
+    op: conv2d
+
+  # conv4
+  - pad: 1
+    activate: ReLU
+    out_offset: 0
+    processors: 0xffff.ffff.ffff.ffff
+    op: conv2d
+
+  # conv5 (pool 2 + conv)
+  - max_pool: 2
+    pool_stride: 2
+    pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0xffff.ffff.ffff.ffff
+    op: conv2d
+    output_width: 8
+
+  # avgpool 4 → 1x1
+  - avg_pool: 4
+    pool_stride: 1
+    out_offset: 0
+    processors: 0xffff.ffff.ffff.ffff
+    op: passthrough
+
+  # MLP 128 → 10
+  - op: mlp
+    out_offset: 0x2000
+    output_width: 32
+    processors: 0xffff.ffff.ffff.ffff

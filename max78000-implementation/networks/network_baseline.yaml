@@ -1,0 +1,47 @@
+---
+# MAX78000 synthesis config for the CMSIS-NN baseline (3x3 substitute).
+# Spatial flow:  32x32x3 → 32x32x32 → 16x16x32 → 8x8x64 → 4x4x64 → 10
+
+arch: ai85net_cmsis_baseline
+dataset: CIFAR10
+
+layers:
+  # L1: conv 3x3, 3 -> 32, ReLU            32x32x3 → 32x32x32
+  - pad: 1
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0x0000.0000.0000.0007       # 3 input chans (RGB)
+    data_format: HWC
+    op: conv2d
+
+  # L2: maxpool 2x2 + conv 3x3, 32 -> 32, ReLU    32x32x32 → 16x16x32
+  - pad: 1
+    max_pool: 2
+    pool_stride: 2
+    activate: ReLU
+    out_offset: 0
+    processors: 0xffff.ffff.0000.0000       # 32 input chans on procs 32..63
+    op: conv2d
+
+  # L3: maxpool 2x2 + conv 3x3, 32 -> 64, ReLU    16x16x32 → 8x8x64
+  - pad: 1
+    max_pool: 2
+    pool_stride: 2
+    activate: ReLU
+    out_offset: 0x2000
+    processors: 0x0000.0000.ffff.ffff       # 32 input chans on procs 0..31
+    op: conv2d
+
+  # L4: maxpool 2x2 (passthrough)                 8x8x64 → 4x4x64
+  - max_pool: 2
+    pool_stride: 2
+    out_offset: 0
+    processors: 0xffff.ffff.ffff.ffff       # 64 input chans
+    op: passthrough
+
+  # L5: MLP 1024 -> 10, int32 output
+  - op: mlp
+    out_offset: 0x2000
+    output_width: 32
+    flatten: true
+    processors: 0xffff.ffff.ffff.ffff       # 64 input chans → flatten to 1024 features

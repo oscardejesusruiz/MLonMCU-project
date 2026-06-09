@@ -1,0 +1,282 @@
+{
+  "baseline": {
+    "model": "baseline",
+    "params_pytorch": 38890,
+    "params_on_device_after_bn_fold": 38890,
+    "weight_memory_bytes_int8": 38890,
+    "weight_memory_kib": 37.978515625,
+    "weight_memory_cap_bytes": 442368,
+    "weight_memory_utilization_pct": 8.791323061342593,
+    "macs": 4433920,
+    "ops_paper_convention": 8867840,
+    "latency_lower_bound_us": 692.8000000000001,
+    "fps_upper_bound": 1443.4180138568129,
+    "peak_gops": 12.8,
+    "per_layer_macs": [
+      {
+        "name": "features.0",
+        "macs": 884736
+      },
+      {
+        "name": "features.3",
+        "macs": 2359296
+      },
+      {
+        "name": "features.6",
+        "macs": 1179648
+      },
+      {
+        "name": "classifier",
+        "macs": 10240
+      }
+    ]
+  },
+  "improved": {
+    "model": "improved",
+    "params_pytorch": 39018,
+    "params_on_device_after_bn_fold": 38762,
+    "weight_memory_bytes_int8": 38762,
+    "weight_memory_kib": 37.853515625,
+    "weight_memory_cap_bytes": 442368,
+    "weight_memory_utilization_pct": 8.762387876157407,
+    "macs": 4433920,
+    "ops_paper_convention": 8867840,
+    "latency_lower_bound_us": 692.8000000000001,
+    "fps_upper_bound": 1443.4180138568129,
+    "peak_gops": 12.8,
+    "per_layer_macs": [
+      {
+        "name": "features.0",
+        "macs": 884736
+      },
+      {
+        "name": "features.4",
+        "macs": 2359296
+      },
+      {
+        "name": "features.8",
+        "macs": 1179648
+      },
+      {
+        "name": "classifier.1",
+        "macs": 10240
+      }
+    ]
+  },
+  "mininet": {
+    "model": "mininet",
+    "params_pytorch": 316458,
+    "params_on_device_after_bn_fold": 315498,
+    "weight_memory_bytes_int8": 315498,
+    "weight_memory_kib": 308.103515625,
+    "weight_memory_cap_bytes": 442368,
+    "weight_memory_utilization_pct": 71.32025824652777,
+    "macs": 24478976,
+    "ops_paper_convention": 48957952,
+    "latency_lower_bound_us": 3824.84,
+    "fps_upper_bound": 261.44884491900314,
+    "peak_gops": 12.8,
+    "per_layer_macs": [
+      {
+        "name": "l1.conv",
+        "macs": 884736
+      },
+      {
+        "name": "l2.conv",
+        "macs": 4718592
+      },
+      {
+        "name": "l3.conv",
+        "macs": 9437184
+      },
+      {
+        "name": "l4.conv",
+        "macs": 2359296
+      },
+      {
+        "name": "l5.conv",
+        "macs": 4718592
+      },
+      {
+        "name": "l6.conv",
+        "macs": 2359296
+      },
+      {
+        "name": "classifier",
+        "macs": 1280
+      }
+    ]
+  },
+  "deeper": {
+    "model": "deeper",
+    "params_pytorch": 141034,
+    "params_on_device_after_bn_fold": 140394,
+    "weight_memory_bytes_int8": 140394,
+    "weight_memory_kib": 137.103515625,
+    "weight_memory_cap_bytes": 442368,
+    "weight_memory_utilization_pct": 31.736924913194443,
+    "macs": 7963904,
+    "ops_paper_convention": 15927808,
+    "latency_lower_bound_us": 1244.36,
+    "fps_upper_bound": 803.6259603330227,
+    "peak_gops": 12.8,
+    "per_layer_macs": [
+      {
+        "name": "features.0",
+        "macs": 884736
+      },
+      {
+        "name": "features.4",
+        "macs": 2359296
+      },
+      {
+        "name": "features.8",
+        "macs": 1179648
+      },
+      {
+        "name": "features.11",
+        "macs": 2359296
+      },
+      {
+        "name": "features.15",
+        "macs": 1179648
+      },
+      {
+        "name": "classifier.1",
+        "macs": 1280
+      }
+    ]
+  },
+  "nascifarnet": {
+    "model": "nascifarnet",
+    "params_pytorch": 301770,
+    "params_on_device_after_bn_fold": 300106,
+    "weight_memory_bytes_int8": 300106,
+    "weight_memory_kib": 293.072265625,
+    "weight_memory_cap_bytes": 442368,
+    "weight_memory_utilization_pct": 67.84080222800925,
+    "macs": 36180992,
+    "ops_paper_convention": 72361984,
+    "latency_lower_bound_us": 5653.28,
+    "fps_upper_bound": 176.88846121189823,
+    "peak_gops": 12.8,
+    "per_layer_macs": [
+      {
+        "name": "conv1_1.0",
+        "macs": 1769472
+      },
+      {
+        "name": "conv1_2.0",
+        "macs": 2097152
+      },
+      {
+        "name": "conv1_3.0",
+        "macs": 18874368
+      },
+      {
+        "name": "conv2_1.0",
+        "macs": 4718592
+      },
+      {
+        "name": "conv2_2.0",
+        "macs": 524288
+      },
+      {
+        "name": "conv3_1.0",
+        "macs": 4718592
+      },
+      {
+        "name": "conv3_2.0",
+        "macs": 1048576
+      },
+      {
+        "name": "conv4_1.0",
+        "macs": 1179648
+      },
+      {
+        "name": "conv4_2.0",
+        "macs": 1179648
+      },
+      {
+        "name": "conv5_1.0",
+        "macs": 65536
+      },
+      {
+        "name": "fc",
+        "macs": 5120
+      }
+    ]
+  },
+  "ressimplenet": {
+    "model": "ressimplenet",
+    "params_pytorch": 372512,
+    "params_on_device_after_bn_fold": 370272,
+    "weight_memory_bytes_int8": 370272,
+    "weight_memory_kib": 361.59375,
+    "weight_memory_cap_bytes": 442368,
+    "weight_memory_utilization_pct": 83.70225694444444,
+    "macs": 18449664,
+    "ops_paper_convention": 36899328,
+    "latency_lower_bound_us": 2882.7599999999998,
+    "fps_upper_bound": 346.8897861771358,
+    "peak_gops": 12.8,
+    "per_layer_macs": [
+      {
+        "name": "conv1.0",
+        "macs": 442368
+      },
+      {
+        "name": "conv2.0",
+        "macs": 2949120
+      },
+      {
+        "name": "conv3.0",
+        "macs": 3686400
+      },
+      {
+        "name": "conv4.0",
+        "macs": 3686400
+      },
+      {
+        "name": "conv5.0",
+        "macs": 921600
+      },
+      {
+        "name": "conv6.0",
+        "macs": 921600
+      },
+      {
+        "name": "conv7.0",
+        "macs": 2027520
+      },
+      {
+        "name": "conv8.0",
+        "macs": 1216512
+      },
+      {
+        "name": "conv9.0",
+        "macs": 1327104
+      },
+      {
+        "name": "conv10.0",
+        "macs": 663552
+      },
+      {
+        "name": "conv11.0",
+        "macs": 196608
+      },
+      {
+        "name": "conv12.0",
+        "macs": 262144
+      },
+      {
+        "name": "conv13.0",
+        "macs": 147456
+      },
+      {
+        "name": "classifier",
+        "macs": 1280
+      }
+    ]
+  }
+}
